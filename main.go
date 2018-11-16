@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 
 	winio "github.com/Microsoft/go-winio"
 	"github.com/Microsoft/go-winio/archive/tar"
@@ -49,8 +48,6 @@ func main() {
 	}
 
 	// export the layer
-	fmt.Println("parent layer paths:")
-	fmt.Println(strings.Join(bundleSpec.Windows.LayerFolders, "\n"))
 	tarStream, err := exportLayer(containerId, bundleSpec.Windows.LayerFolders, driverInfo)
 	if err != nil {
 		fmt.Errorf("Error exporting layer: %s", err.Error())

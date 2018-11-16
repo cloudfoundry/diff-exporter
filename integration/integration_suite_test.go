@@ -51,3 +51,7 @@ var _ = BeforeSuite(func() {
 	diffBin, err = gexec.Build("code.cloudfoundry.org/diff-exporter")
 	Expect(err).ToNot(HaveOccurred())
 })
+
+var _ = AfterSuite(func() {
+	gexec.CleanupBuildArtifacts()
+})
