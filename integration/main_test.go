@@ -57,8 +57,7 @@ var _ = Describe("diff_exporter", func() {
 		})
 
 		It("outputs a tarfile containing the result of running a command in the container", func() {
-
-			_, _, err = helpers.Execute(exec.Command(diffBin, "-outputDir", outputDir, "-containerId", containerId, "-bundlePath", filepath.Join(bundlePath, "config.json"), "-driverStore", grootImageStore)) // TODO: read driverStore from the parent layer paths in the config
+			_, _, err = helpers.Execute(exec.Command(diffBin, "-outputDir", outputDir, "-containerId", containerId, "-bundlePath", filepath.Join(bundlePath, "config.json")))
 			Expect(err).ToNot(HaveOccurred())
 
 			files, err := ioutil.ReadDir(outputDir)
