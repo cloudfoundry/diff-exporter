@@ -12,28 +12,42 @@ import (
 	"code.cloudfoundry.org/diff-exporter/layer"
 )
 
-//type Exporter interface {
-//	Export() (io.ReadCloser, error)
-//}
+type Exporter interface {
+	Export() (io.ReadCloser, error)
+}
 
 func main() {
 	outputDir, containerId, bundlePath := parseFlags()
 
 	exporter := layer.New(containerId, bundlePath)
 
-	// export the layer
-	tarStream, err := exporter.Export()
+	outfile, sha256Name, err := getTarFile(exporter, outputDir)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error exporting layer: %s", err.Error())
+		fmt.Fprintf(os.Stderr, "Error creating intermediate tar file: %s", err.Error())
 		os.Exit(1)
 	}
 
-	// setup intermediate tar file
-	outfile, err := ioutil.TempFile(outputDir, "export-archive")
+	err = os.Rename(outfile.Name(), filepath.Join(outputDir, sha256Name))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating temp file: %s", err.Error())
+		fmt.Fprintf(os.Stderr, "Error renaming intermediate tar file: %s", err.Error())
 		os.Exit(1)
 	}
+}
+
+func getTarFile(exporter Exporter, outputDir string) (outfile *os.File, sha256Name string, err error) {
+	// export the layer
+	tarStream, err := exporter.Export()
+	if err != nil {
+		return outfile, sha256Name, err
+	}
+	defer tarStream.Close()
+
+	// setup intermediate tar file
+	outfile, err = ioutil.TempFile(outputDir, "export-archive")
+	if err != nil {
+		return outfile, sha256Name, err
+	}
+	defer outfile.Close()
 
 	// read from the tar stream and calculate the shasum at the same time
 	shasum := sha256.New()
@@ -41,21 +55,11 @@ func main() {
 
 	_, err = io.Copy(writer, tarStream)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error copying tar stream: %s", err.Error())
-		os.Exit(1)
+		return outfile, sha256Name, err
 	}
-
-	outfile.Close()
-	tarStream.Close()
 
 	// rename the intermediate tar file to be the shasum of its contents
-	sha256Name := fmt.Sprintf("%x", shasum.Sum(nil))
-
-	err = os.Rename(outfile.Name(), filepath.Join(outputDir, sha256Name))
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error renaming intermediate tar file: %s", err.Error())
-		os.Exit(1)
-	}
+	return outfile, fmt.Sprintf("%x", shasum.Sum(nil)), nil
 }
 
 func parseFlags() (string, string, string) {
