@@ -55,23 +55,6 @@ func NewHelpers(wincBin, grootBin, grootImageStore, wincNetworkBin string, debug
 	return h
 }
 
-//func (h *Helpers) Logs() []byte {
-//	h.logFile.Close()
-//	content, err := ioutil.ReadFile(h.logFile.Name())
-//	ExpectWithOffset(1, err).ToNot(HaveOccurred())
-//	Expect(os.RemoveAll(h.logFile.Name())).To(Succeed())
-//	return content
-//}
-
-//func (h *Helpers) GetContainerState(containerId string) specs.State {
-//	stdOut, _, err := h.Execute(h.ExecCommand(h.wincBin, "state", containerId))
-//	ExpectWithOffset(1, err).ToNot(HaveOccurred())
-//
-//	var state specs.State
-//	ExpectWithOffset(1, json.Unmarshal(stdOut.Bytes(), &state)).To(Succeed())
-//	return state
-//}
-
 func (h *Helpers) GenerateBundle(bundleSpec specs.Spec, bundlePath string) {
 	ExpectWithOffset(1, os.MkdirAll(bundlePath, 0666)).To(Succeed())
 	config, err := json.Marshal(&bundleSpec)
@@ -85,12 +68,6 @@ func (h *Helpers) CreateContainer(bundleSpec specs.Spec, bundlePath, containerId
 	_, _, err := h.Execute(h.ExecCommand(h.wincBin, "create", "-b", bundlePath, containerId))
 	ExpectWithOffset(1, err).NotTo(HaveOccurred())
 }
-
-//func (h *Helpers) RunContainer(bundleSpec specs.Spec, bundlePath, containerId string) {
-//	h.GenerateBundle(bundleSpec, bundlePath)
-//	_, _, err := h.Execute(h.ExecCommand(h.wincBin, "run", "--detach", "-b", bundlePath, containerId))
-//	ExpectWithOffset(1, err).NotTo(HaveOccurred())
-//}
 
 func (h *Helpers) StartContainer(containerId string) {
 	Eventually(func() error {
@@ -166,27 +143,6 @@ func (h *Helpers) GenerateRuntimeSpec(baseSpec specs.Spec) specs.Spec {
 	}
 }
 
-//func (h *Helpers) RandomContainerId() string {
-//	max := big.NewInt(math.MaxInt64)
-//	r, err := rand.Int(rand.Reader, max)
-//	ExpectWithOffset(1, err).NotTo(HaveOccurred())
-//
-//	return fmt.Sprintf("%d", r.Int64())
-//}
-
-//func (h *Helpers) CopyFile(dst, src string) {
-//	in, err := os.Open(src)
-//	ExpectWithOffset(1, err).NotTo(HaveOccurred())
-//	defer in.Close()
-//	out, err := os.Create(dst)
-//	ExpectWithOffset(1, err).NotTo(HaveOccurred())
-//	defer out.Close()
-//	_, err = io.Copy(out, in)
-//	closeErr := out.Close()
-//	ExpectWithOffset(1, err).NotTo(HaveOccurred())
-//	ExpectWithOffset(1, closeErr).NotTo(HaveOccurred())
-//}
-
 func (h *Helpers) Execute(c *exec.Cmd) (*bytes.Buffer, *bytes.Buffer, error) {
 	stdOut := new(bytes.Buffer)
 	stdErr := new(bytes.Buffer)
@@ -197,53 +153,6 @@ func (h *Helpers) Execute(c *exec.Cmd) (*bytes.Buffer, *bytes.Buffer, error) {
 	return stdOut, stdErr, err
 }
 
-//func (h *Helpers) ExitCode(err error) (int, error) {
-//	if exiterr, ok := err.(*exec.ExitError); ok {
-//		if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
-//			return status.ExitStatus(), nil
-//		} else {
-//			return -1, errors.New("Error did not have a syscall.WaitStatus")
-//		}
-//	} else {
-//		return -1, errors.New("Error was not an exec.ExitError")
-//	}
-//}
-//
-//func (h *Helpers) TheProcessExits(containerId, image string) {
-//	exited := false
-//
-//	for i := 0; i < 5; i++ {
-//		time.Sleep(time.Duration(i) * time.Second)
-//		pl := h.ContainerProcesses(containerId, image)
-//		if len(pl) == 0 {
-//			exited = true
-//			break
-//		}
-//	}
-//	ExpectWithOffset(1, exited).To(BeTrue())
-//}
-//
-//func (h *Helpers) ContainerProcesses(containerId, filter string) []hcsshim.ProcessListItem {
-//	container, err := hcsshim.OpenContainer(containerId)
-//	Expect(err).To(Succeed())
-//
-//	pl, err := container.ProcessList()
-//	Expect(err).To(Succeed())
-//
-//	if filter != "" {
-//		var filteredPL []hcsshim.ProcessListItem
-//		for _, v := range pl {
-//			if v.ImageName == filter {
-//				filteredPL = append(filteredPL, v)
-//			}
-//		}
-//
-//		return filteredPL
-//	}
-//
-//	return pl
-//}
-//
 func (h *Helpers) ExecCommand(command string, args ...string) *exec.Cmd {
 	allArgs := []string{}
 	if h.debug {

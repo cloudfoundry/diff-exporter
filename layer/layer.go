@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -34,16 +33,14 @@ func (e *Exporter) Export() (io.ReadCloser, error) {
 	// read bundle path
 	content, err := ioutil.ReadFile(e.bundlePath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading bundle path: %s", err.Error())
-		return nil, err
+		return nil, fmt.Errorf("Error reading bundle path: %s", err.Error())
 	}
 
 	// parse bundle spec
 	var bundleSpec specs.Spec
 	err = json.Unmarshal(content, &bundleSpec)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error unmarshaling bundle: %s", err.Error())
-		return nil, err
+		return nil, fmt.Errorf("Error unmarshaling bundle: %s", err.Error())
 	}
 
 	// setup driver info
@@ -54,8 +51,7 @@ func (e *Exporter) Export() (io.ReadCloser, error) {
 	// unprepare layer
 	err = hcsshim.UnprepareLayer(driverInfo, e.containerId)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error unpreparing layer: %s", err.Error())
-		return nil, err
+		return nil, fmt.Errorf("Error unpreparing layer: %s", err.Error())
 	}
 
 	return exportLayer(e.containerId, bundleSpec.Windows.LayerFolders, driverInfo)

@@ -38,14 +38,14 @@ func getTarFile(exporter Exporter, outputDir string) (outfile *os.File, sha256Na
 	// export the layer
 	tarStream, err := exporter.Export()
 	if err != nil {
-		return outfile, sha256Name, err
+		return outfile, sha256Name, fmt.Errorf("Error exporting layer: %s", err.Error())
 	}
 	defer tarStream.Close()
 
 	// setup intermediate tar file
 	outfile, err = ioutil.TempFile(outputDir, "export-archive")
 	if err != nil {
-		return outfile, sha256Name, err
+		return outfile, sha256Name, fmt.Errorf("Error creating outfile: %s", err.Error())
 	}
 	defer outfile.Close()
 
@@ -55,7 +55,7 @@ func getTarFile(exporter Exporter, outputDir string) (outfile *os.File, sha256Na
 
 	_, err = io.Copy(writer, tarStream)
 	if err != nil {
-		return outfile, sha256Name, err
+		return outfile, sha256Name, fmt.Errorf("Error copying tar stream: %s", err.Error())
 	}
 
 	// rename the intermediate tar file to be the shasum of its contents

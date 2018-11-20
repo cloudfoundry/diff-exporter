@@ -1,6 +1,9 @@
 package integration_test
 
 import (
+	"crypto/sha256"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 
@@ -65,6 +68,17 @@ var _ = Describe("diff_exporter", func() {
 
 			firstFile := files[0]
 			Expect(helpers.IsTarFile(filepath.Join(outputDir, firstFile.Name()))).To(BeTrue())
+
+			stdOut, _, err := helpers.Execute(exec.Command("tar", "tf", filepath.Join(outputDir, firstFile.Name())))
+			Expect(err).ToNot(HaveOccurred())
+			Expect(string(stdOut.Bytes())).To(ContainSubstring("Files/hello.txt"))
+
+			shasum := sha256.New()
+			f, err := os.Open(filepath.Join(outputDir, firstFile.Name()))
+			defer f.Close()
+			_, err = io.Copy(shasum, f)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(firstFile.Name()).To(Equal(fmt.Sprintf("%x", shasum.Sum(nil))))
 		})
 	})
 })
