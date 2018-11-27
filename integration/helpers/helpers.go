@@ -113,10 +113,6 @@ func (h *Helpers) ExecInContainer(id string, args []string, detach bool) (*bytes
 	var defaultArgs []string
 
 	defaultArgs = []string{"exec"}
-	// on 1709, need non-admin user for networking tests
-	if h.windowsBuild == 16299 {
-		defaultArgs = append(defaultArgs, "-u", "vcap")
-	}
 
 	if detach {
 		defaultArgs = append(defaultArgs, "-d")
