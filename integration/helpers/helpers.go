@@ -159,13 +159,13 @@ func (h *Helpers) ExecCommand(command string, args ...string) *exec.Cmd {
 	return exec.Command(command, allArgs...)
 }
 
-func (h *Helpers) IsTarFile(path string) (bool, error) {
+func (h *Helpers) IsGzFile(path string) (bool, error) {
 	file, _ := os.Open(path)
 	defer file.Close()
 
-	// We only have to pass the file header = first 261 bytes
-	head := make([]byte, 262)
+	// We only have to pass the file header = first 3 bytes
+	head := make([]byte, 3)
 	file.Read(head)
 
-	return matchers.Tar(head), nil
+	return matchers.Gz(head), nil
 }

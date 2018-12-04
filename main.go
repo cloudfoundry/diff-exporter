@@ -21,7 +21,7 @@ func main() {
 
 	exporter := layer.New(containerId, bundlePath)
 
-	outfile, sha256Name, err := getTarFile(exporter, outputDir)
+	outfile, sha256Name, err := getTgzFile(exporter, outputDir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error creating intermediate tar file: %s", err.Error())
 		os.Exit(1)
@@ -34,13 +34,13 @@ func main() {
 	}
 }
 
-func getTarFile(exporter Exporter, outputDir string) (outfile *os.File, sha256Name string, err error) {
+func getTgzFile(exporter Exporter, outputDir string) (outfile *os.File, sha256Name string, err error) {
 	// export the layer
-	tarStream, err := exporter.Export()
+	tgzStream, err := exporter.Export()
 	if err != nil {
 		return outfile, sha256Name, fmt.Errorf("Error exporting layer: %s", err.Error())
 	}
-	defer tarStream.Close()
+	defer tgzStream.Close()
 
 	// setup intermediate tar file
 	outfile, err = ioutil.TempFile(outputDir, "export-archive")
@@ -53,7 +53,7 @@ func getTarFile(exporter Exporter, outputDir string) (outfile *os.File, sha256Na
 	shasum := sha256.New()
 	writer := io.MultiWriter(outfile, shasum)
 
-	_, err = io.Copy(writer, tarStream)
+	_, err = io.Copy(writer, tgzStream)
 	if err != nil {
 		return outfile, sha256Name, fmt.Errorf("Error copying tar stream: %s", err.Error())
 	}

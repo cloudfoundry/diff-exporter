@@ -1,6 +1,7 @@
 package layer
 
 import (
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -85,7 +86,8 @@ func exportLayer(cid string, parentLayerPaths []string, driverInfo hcsshim.Drive
 }
 
 func writeTarFromLayer(r hcsshim.LayerReader, w io.Writer) error {
-	t := tar.NewWriter(w)
+	g := gzip.NewWriter(w)
+	t := tar.NewWriter(g)
 	for {
 		name, size, fileInfo, err := r.Next()
 		if err == io.EOF {
@@ -110,5 +112,9 @@ func writeTarFromLayer(r hcsshim.LayerReader, w io.Writer) error {
 			}
 		}
 	}
-	return t.Close()
+	err := t.Close()
+	if err != nil {
+		return err
+	}
+	return g.Close()
 }

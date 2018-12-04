@@ -60,14 +60,16 @@ var _ = Describe("diff_exporter", func() {
 		})
 
 		It("outputs a tarfile containing the result of running a command in the container", func() {
+			fmt.Printf("Does layer exist before execute: %t", helpers.ContainerExists(containerId))
 			_, _, err = helpers.Execute(exec.Command(diffBin, "-outputDir", outputDir, "-containerId", containerId, "-bundlePath", filepath.Join(bundlePath, "config.json")))
+			fmt.Printf("Does layer exist after execute: %t", helpers.ContainerExists(containerId))
 			Expect(err).ToNot(HaveOccurred())
 
 			files, err := ioutil.ReadDir(outputDir)
 			Expect(err).ToNot(HaveOccurred())
 
 			firstFile := files[0]
-			Expect(helpers.IsTarFile(filepath.Join(outputDir, firstFile.Name()))).To(BeTrue())
+			Expect(helpers.IsGzFile(filepath.Join(outputDir, firstFile.Name()))).To(BeTrue())
 
 			stdOut, _, err := helpers.Execute(exec.Command("tar", "tf", filepath.Join(outputDir, firstFile.Name())))
 			Expect(err).ToNot(HaveOccurred())
@@ -75,6 +77,7 @@ var _ = Describe("diff_exporter", func() {
 
 			shasum := sha256.New()
 			f, err := os.Open(filepath.Join(outputDir, firstFile.Name()))
+			fmt.Printf("Layer created at %s\n", filepath.Join(outputDir, firstFile.Name()))
 			defer f.Close()
 			_, err = io.Copy(shasum, f)
 			Expect(err).ToNot(HaveOccurred())
