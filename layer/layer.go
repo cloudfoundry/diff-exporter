@@ -7,7 +7,6 @@ import (
 	"io"
 	"io/ioutil"
 	"path/filepath"
-	"strings"
 
 	winio "github.com/Microsoft/go-winio"
 	"github.com/Microsoft/go-winio/archive/tar"
@@ -16,7 +15,10 @@ import (
 	specs "github.com/opencontainers/runtime-spec/specs-go"
 )
 
-const whiteoutPrefix = ".wh."
+const (
+	specConfig     = "config.json"
+	whiteoutPrefix = ".wh."
+)
 
 type Exporter struct {
 	containerId string
@@ -31,10 +33,10 @@ func New(containerId string, bundlePath string) *Exporter {
 }
 
 func (e *Exporter) Export() (io.ReadCloser, error) {
-	// read bundle path
-	content, err := ioutil.ReadFile(e.bundlePath)
+	// read config.json from bundle directory
+	content, err := ioutil.ReadFile(filepath.Join(e.bundlePath, specConfig))
 	if err != nil {
-		return nil, fmt.Errorf("Error reading bundle path: %s", err.Error())
+		return nil, fmt.Errorf("Error reading bundle config.json: %s", err.Error())
 	}
 
 	// parse bundle spec
@@ -59,8 +61,7 @@ func (e *Exporter) Export() (io.ReadCloser, error) {
 }
 
 func getDriverStore(layerPath string) string {
-	parts := strings.Split(layerPath, "\\")
-	return strings.Join(parts[:len(parts)-2], "\\") // TODO: use filepath
+	return filepath.Dir(filepath.Dir(layerPath))
 }
 
 func exportLayer(cid string, parentLayerPaths []string, driverInfo hcsshim.DriverInfo) (io.ReadCloser, error) {

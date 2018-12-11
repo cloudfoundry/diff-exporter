@@ -1,13 +1,9 @@
 package integration_test
 
 import (
-	"crypto/sha256"
-	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 
-	//"os"
 	"os/exec"
 	"path/filepath"
 
@@ -18,12 +14,12 @@ import (
 
 var _ = Describe("diff_exporter", func() {
 	Context("when called with the correct arguments", func() {
-
 		var (
 			bundlePath  string
 			containerId string
 			bundleSpec  specs.Spec
 			outputDir   string
+			outputFile  string
 			err         error
 		)
 
@@ -47,6 +43,8 @@ var _ = Describe("diff_exporter", func() {
 
 			outputDir, err = ioutil.TempDir("", "diffoutput")
 			Expect(err).To(Succeed())
+
+			outputFile = filepath.Join(outputDir, "some-output-file.tgz")
 		})
 
 		AfterEach(func() {
@@ -60,28 +58,38 @@ var _ = Describe("diff_exporter", func() {
 		})
 
 		It("outputs a tarfile containing the result of running a command in the container", func() {
-			fmt.Printf("Does layer exist before execute: %t", helpers.ContainerExists(containerId))
-			_, _, err = helpers.Execute(exec.Command(diffBin, "-outputDir", outputDir, "-containerId", containerId, "-bundlePath", filepath.Join(bundlePath, "config.json")))
-			fmt.Printf("Does layer exist after execute: %t", helpers.ContainerExists(containerId))
+			_, _, err = helpers.Execute(exec.Command(diffBin, "-outputFile", outputFile, "-containerId", containerId, "-bundlePath", bundlePath))
 			Expect(err).ToNot(HaveOccurred())
 
-			files, err := ioutil.ReadDir(outputDir)
-			Expect(err).ToNot(HaveOccurred())
+			Expect(helpers.IsGzFile(outputFile)).To(BeTrue())
 
-			firstFile := files[0]
-			Expect(helpers.IsGzFile(filepath.Join(outputDir, firstFile.Name()))).To(BeTrue())
-
-			stdOut, _, err := helpers.Execute(exec.Command("tar", "tf", filepath.Join(outputDir, firstFile.Name())))
+			stdOut, _, err := helpers.Execute(exec.Command("tar", "tf", outputFile))
 			Expect(err).ToNot(HaveOccurred())
 			Expect(string(stdOut.Bytes())).To(ContainSubstring("Files/hello.txt"))
+		})
+	})
 
-			shasum := sha256.New()
-			f, err := os.Open(filepath.Join(outputDir, firstFile.Name()))
-			fmt.Printf("Layer created at %s\n", filepath.Join(outputDir, firstFile.Name()))
-			defer f.Close()
-			_, err = io.Copy(shasum, f)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(firstFile.Name()).To(Equal(fmt.Sprintf("%x", shasum.Sum(nil))))
+	Context("when missing outputFile", func() {
+		It("errors", func() {
+			_, stdErr, err := helpers.Execute(exec.Command(diffBin, "-containerId", "some-container-id", "-bundlePath", "some-bundle-path"))
+			Expect(err).To(HaveOccurred())
+			Expect(stdErr.String()).To(ContainSubstring("must provide output file"))
+		})
+	})
+
+	Context("when missing containerId", func() {
+		It("errors", func() {
+			_, stdErr, err := helpers.Execute(exec.Command(diffBin, "-outputFile", "some-output-file", "-bundlePath", "some-bundle-path"))
+			Expect(err).To(HaveOccurred())
+			Expect(stdErr.String()).To(ContainSubstring("must provide container id"))
+		})
+	})
+
+	Context("when missing bundlePath", func() {
+		It("errors", func() {
+			_, stdErr, err := helpers.Execute(exec.Command(diffBin, "-outputFile", "some-output-file", "-containerId", "some-container-id"))
+			Expect(err).To(HaveOccurred())
+			Expect(stdErr.String()).To(ContainSubstring("must provide bundle path"))
 		})
 	})
 })
