@@ -17,7 +17,8 @@ type Exporter interface {
 func main() {
 	outputFile, containerId, bundlePath, err := parseFlags()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing flags: %s", err.Error())
+		fmt.Fprintf(os.Stderr, "Error parsing flags: %s\n", err.Error())
+		fmt.Fprintf(os.Stderr, "USAGE: diff-exporter.exe <-outputFile outputFile> <-containerId containerId> <-bundlePath bundlePath>\n")
 		os.Exit(1)
 	}
 
