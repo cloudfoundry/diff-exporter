@@ -1,3 +1,5 @@
+// The exportLayer and writeTarFromLayer functions in this file are from
+// github.com/Microsoft/hcsshim, licensed under MIT.
 package layer
 
 import (
