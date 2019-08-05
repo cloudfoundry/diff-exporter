@@ -44,7 +44,8 @@ required = ["github.com/onsi/ginkgo/ginkgo"]
 
 [[constraint]]
   name = "github.com/Microsoft/hcsshim"
-  branch = "master"
+  source = "github.com/greenhouse-org/hcsshim"
+  branch = "v0.8.3-mod"
 
 [[constraint]]
   name = "github.com/h2non/filetype"
