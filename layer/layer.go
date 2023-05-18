@@ -8,8 +8,9 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
+	"archive/tar"
+
 	winio "github.com/Microsoft/go-winio"
-	"github.com/Microsoft/go-winio/archive/tar"
 	"github.com/Microsoft/go-winio/backuptar"
 	"github.com/Microsoft/hcsshim"
 	specs "github.com/opencontainers/runtime-spec/specs-go"

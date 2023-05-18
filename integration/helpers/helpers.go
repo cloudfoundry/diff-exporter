@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/Microsoft/hcsshim"
-	"github.com/h2non/filetype/matchers"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
@@ -167,5 +166,10 @@ func (h *Helpers) IsGzFile(path string) (bool, error) {
 	head := make([]byte, 3)
 	file.Read(head)
 
-	return matchers.Gz(head), nil
+	return Gz(head), nil
+}
+
+func Gz(buf []byte) bool {
+	return len(buf) > 2 &&
+		buf[0] == 0x1F && buf[1] == 0x8B && buf[2] == 0x8
 }
