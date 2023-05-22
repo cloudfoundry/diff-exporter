@@ -6,7 +6,6 @@ Configure-Groot "$env:WINC_TEST_ROOTFS"
 Configure-Winc-Network delete
 
 ginkgo.exe -p -r --race --keep-going --randomize-suites --fail-on-pending
-$exitCode = $LastExitCode
-if ($exitCode -ne 0) {
-  Exit $exitCode
+if ($LastExitCode -ne 0) {
+  throw "tests failed"
 }
