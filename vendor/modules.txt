@@ -40,7 +40,7 @@ github.com/containerd/cgroups/stats/v1
 # github.com/containerd/containerd v1.7.11
 ## explicit; go 1.19
 github.com/containerd/containerd/errdefs
-# github.com/go-logr/logr v1.3.0
+# github.com/go-logr/logr v1.4.0
 ## explicit; go 1.18
 github.com/go-logr/logr
 github.com/go-logr/logr/funcr
@@ -180,7 +180,7 @@ golang.org/x/tools/internal/versions
 # google.golang.org/genproto/googleapis/rpc v0.0.0-20231212172506-995d672761c0
 ## explicit; go 1.19
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.60.0
+# google.golang.org/grpc v1.60.1
 ## explicit; go 1.19
 google.golang.org/grpc/attributes
 google.golang.org/grpc/codes
