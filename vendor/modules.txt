@@ -94,7 +94,7 @@ github.com/onsi/ginkgo/v2/internal/parallel_support
 github.com/onsi/ginkgo/v2/internal/testingtproxy
 github.com/onsi/ginkgo/v2/reporters
 github.com/onsi/ginkgo/v2/types
-# github.com/onsi/gomega v1.31.0
+# github.com/onsi/gomega v1.31.1
 ## explicit; go 1.20
 github.com/onsi/gomega
 github.com/onsi/gomega/format
@@ -177,7 +177,7 @@ golang.org/x/tools/internal/tokeninternal
 golang.org/x/tools/internal/typeparams
 golang.org/x/tools/internal/typesinternal
 golang.org/x/tools/internal/versions
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20240116215550-a9fa1716bcac
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20240123012728-ef4313101c80
 ## explicit; go 1.19
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.60.1
