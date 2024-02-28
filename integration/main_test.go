@@ -65,7 +65,7 @@ var _ = Describe("diff_exporter", func() {
 
 			stdOut, _, err := helpers.Execute(exec.Command("tar", "tf", outputFile))
 			Expect(err).ToNot(HaveOccurred())
-			Expect(string(stdOut.Bytes())).To(ContainSubstring("Files/hello.txt"))
+			Expect(stdOut.String()).To(ContainSubstring("Files/hello.txt"))
 		})
 	})
 
