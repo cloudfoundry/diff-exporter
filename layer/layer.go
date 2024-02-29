@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"archive/tar"
@@ -35,7 +35,7 @@ func New(containerId string, bundlePath string) *Exporter {
 
 func (e *Exporter) Export() (io.ReadCloser, error) {
 	// read config.json from bundle directory
-	content, err := ioutil.ReadFile(filepath.Join(e.bundlePath, specConfig))
+	content, err := os.ReadFile(filepath.Join(e.bundlePath, specConfig))
 	if err != nil {
 		return nil, fmt.Errorf("Error reading bundle config.json: %s", err.Error())
 	}
