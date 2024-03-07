@@ -1,7 +1,6 @@
 package integration_test
 
 import (
-	"io/ioutil"
 	"os"
 
 	"os/exec"
@@ -24,7 +23,7 @@ var _ = Describe("diff_exporter", func() {
 		)
 
 		BeforeEach(func() {
-			bundlePath, err = ioutil.TempDir("", "winccontainer")
+			bundlePath, err = os.MkdirTemp("", "winccontainer")
 			Expect(err).To(Succeed())
 
 			containerId = filepath.Base(bundlePath)
@@ -41,7 +40,7 @@ var _ = Describe("diff_exporter", func() {
 
 			helpers.DeleteContainer(containerId)
 
-			outputDir, err = ioutil.TempDir("", "diffoutput")
+			outputDir, err = os.MkdirTemp("", "diffoutput")
 			Expect(err).To(Succeed())
 
 			outputFile = filepath.Join(outputDir, "some-output-file.tgz")
@@ -65,7 +64,7 @@ var _ = Describe("diff_exporter", func() {
 
 			stdOut, _, err := helpers.Execute(exec.Command("tar", "tf", outputFile))
 			Expect(err).ToNot(HaveOccurred())
-			Expect(string(stdOut.Bytes())).To(ContainSubstring("Files/hello.txt"))
+			Expect(stdOut.String()).To(ContainSubstring("Files/hello.txt"))
 		})
 	})
 

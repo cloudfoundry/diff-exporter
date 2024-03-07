@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -48,7 +47,7 @@ func NewHelpers(wincBin, grootBin, grootImageStore, wincNetworkBin string, debug
 
 	if h.debug {
 		var err error
-		h.logFile, err = ioutil.TempFile("", "log")
+		h.logFile, err = os.CreateTemp("", "log")
 		ExpectWithOffset(1, err).ToNot(HaveOccurred())
 	}
 	return h
@@ -59,7 +58,7 @@ func (h *Helpers) GenerateBundle(bundleSpec specs.Spec, bundlePath string) {
 	config, err := json.Marshal(&bundleSpec)
 	ExpectWithOffset(1, err).NotTo(HaveOccurred())
 	configFile := filepath.Join(bundlePath, "config.json")
-	ExpectWithOffset(1, ioutil.WriteFile(configFile, config, 0666)).To(Succeed())
+	ExpectWithOffset(1, os.WriteFile(configFile, config, 0666)).To(Succeed())
 }
 
 func (h *Helpers) CreateContainer(bundleSpec specs.Spec, bundlePath, containerId string) {
@@ -149,7 +148,7 @@ func (h *Helpers) Execute(c *exec.Cmd) (*bytes.Buffer, *bytes.Buffer, error) {
 }
 
 func (h *Helpers) ExecCommand(command string, args ...string) *exec.Cmd {
-	allArgs := []string{}
+	var allArgs []string
 	if h.debug {
 		allArgs = append([]string{"--log", h.logFile.Name(), "--debug"}, args...)
 	} else {
