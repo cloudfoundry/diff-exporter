@@ -5,8 +5,8 @@ go 1.21
 toolchain go1.21.8
 
 require (
-	github.com/Microsoft/go-winio v0.6.1
-	github.com/Microsoft/hcsshim v0.12.2
+	github.com/Microsoft/go-winio v0.6.2
+	github.com/Microsoft/hcsshim v0.12.3
 	github.com/onsi/ginkgo/v2 v2.17.1
 	github.com/onsi/gomega v1.33.0
 	github.com/opencontainers/runtime-spec v1.2.0
@@ -24,9 +24,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.20.0 // indirect
