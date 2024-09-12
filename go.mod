@@ -4,6 +4,10 @@ go 1.22.0
 
 toolchain go1.22.3
 
+// github.com/Microsofthcsshim currently requires this to be pinned back, as it doesn't
+// support v0.2.0+ where ToGRPC() is not a function anymore
+replace github.com/containerd/errdefs => github.com/containerd/errdefs v0.1.0
+
 require (
 	github.com/Microsoft/go-winio v0.6.2
 	github.com/Microsoft/hcsshim v0.12.6
@@ -14,7 +18,7 @@ require (
 
 require (
 	github.com/containerd/cgroups/v3 v3.0.3 // indirect
-	github.com/containerd/errdefs v0.1.0 // indirect
+	github.com/containerd/errdefs v0.2.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -28,7 +32,7 @@ require (
 	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/tools v0.25.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240903143218-8af14fe29dc1 // indirect
-	google.golang.org/grpc v1.66.1 // indirect
+	google.golang.org/grpc v1.66.2 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
