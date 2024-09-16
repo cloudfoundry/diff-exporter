@@ -163,7 +163,10 @@ func (h *Helpers) IsGzFile(path string) (bool, error) {
 
 	// We only have to pass the file header = first 3 bytes
 	head := make([]byte, 3)
-	file.Read(head)
+	_, err := file.Read(head)
+	if err != nil {
+		return false, err
+	}
 
 	return Gz(head), nil
 }
