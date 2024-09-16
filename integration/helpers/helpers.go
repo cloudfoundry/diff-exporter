@@ -54,11 +54,11 @@ func NewHelpers(wincBin, grootBin, grootImageStore, wincNetworkBin string, debug
 }
 
 func (h *Helpers) GenerateBundle(bundleSpec specs.Spec, bundlePath string) {
-	ExpectWithOffset(1, os.MkdirAll(bundlePath, 0666)).To(Succeed())
+	ExpectWithOffset(1, os.MkdirAll(bundlePath, 0755)).To(Succeed())
 	config, err := json.Marshal(&bundleSpec)
 	ExpectWithOffset(1, err).NotTo(HaveOccurred())
 	configFile := filepath.Join(bundlePath, "config.json")
-	ExpectWithOffset(1, os.WriteFile(configFile, config, 0666)).To(Succeed())
+	ExpectWithOffset(1, os.WriteFile(configFile, config, 0644)).To(Succeed())
 }
 
 func (h *Helpers) CreateContainer(bundleSpec specs.Spec, bundlePath, containerId string) {
