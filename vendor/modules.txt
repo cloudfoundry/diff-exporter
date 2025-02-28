@@ -108,7 +108,7 @@ github.com/onsi/gomega/matchers/support/goraph/edge
 github.com/onsi/gomega/matchers/support/goraph/node
 github.com/onsi/gomega/matchers/support/goraph/util
 github.com/onsi/gomega/types
-# github.com/opencontainers/runtime-spec v1.2.0
+# github.com/opencontainers/runtime-spec v1.2.1
 ## explicit
 github.com/opencontainers/runtime-spec/specs-go
 # github.com/pkg/errors v0.9.1
@@ -158,7 +158,7 @@ golang.org/x/text/transform
 golang.org/x/tools/cover
 golang.org/x/tools/go/ast/inspector
 golang.org/x/tools/internal/astutil/edge
-# google.golang.org/genproto/googleapis/rpc v0.0.0-20250224174004-546df14abb99
+# google.golang.org/genproto/googleapis/rpc v0.0.0-20250227231956-55c901821b1e
 ## explicit; go 1.23.0
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.70.0
