@@ -1,3 +1,7 @@
+> [!CAUTION]
+> This repository has been in-lined (using git-subtree) into [winc-release](https://github.com/cloudfoundry/winc-release/pull/46). Please make any
+> future contributions directly to winc-release.
+
 # diff-exporter
 
 The `diff-exporter` extracts (exports) the diff layer given a running container ID and a bundle path (that contains the config.json). The layer is saved to the location provided by the `-outputFile` parameter. The output layer is of `tar.gz` mediatype and the filename is the `sha256` of its contents.
